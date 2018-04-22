@@ -10,4 +10,4 @@
 #    https://app.cucumber.pro/projects/cucumber-pro-plugin-jvm/documents/branch/master#configuration
 #
 cucumberpro:
-  projectname: cucumber-java-skeleton
+  projectname: cucumber-java-bank
