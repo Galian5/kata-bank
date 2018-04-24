@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 project.ext {
     cucumberVersion = '2.4.0'
@@ -11,6 +12,13 @@ dependencies {
     testCompile 'io.cucumber:cucumber-junit:' + cucumberVersion
     testCompile 'io.cucumber:pro-plugin:' + cucumberProVersion
     testCompile 'junit:junit:' + junitVersion
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
 }
 
 repositories {
