@@ -1,18 +1,15 @@
 package bank;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AccountMapping {
-    private Map<Customer, Set<Account>> mapping = new HashMap<>();
+    private HashMap<Customer, Set<Account>> mapping = new HashMap<>();
 
-    public Set<Account> getAccounts(Customer customer){
-        return mapping.getOrDefault(customer, Collections.emptySet());
+    public Set<Account> getAccounts(Customer customer) {
+        return mapping.getOrDefault(customer, new HashSet<>(Collections.emptySet()));
     }
 
-    public void addAccount(Account account){
+    public void addAccount(Account account) {
         Set<Account> accounts = getAccounts(account.getOwner());
         accounts.add(account);
         mapping.put(account.getOwner(), accounts);

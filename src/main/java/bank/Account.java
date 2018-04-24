@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Account{
+public class Account {
     private final UUID uuid;
     private final Customer owner;
 

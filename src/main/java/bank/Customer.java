@@ -20,8 +20,8 @@ public class Customer {
         return Objects.hash(uuid);
     }
 
-    public Customer(UUID uuid) {
+    public Customer() {
 
-        this.uuid = uuid;
+        this.uuid = UUID.randomUUID();
     }
 }
