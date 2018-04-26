@@ -4,6 +4,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import cucumber.api.java.en.Then;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public class Stepdefs {
@@ -37,6 +38,31 @@ public class Stepdefs {
     @Then("^no other account is listed$")
     public void no_other_account_is_listed() {
         assert testAccounts.stream().allMatch(account -> account == a1 || account == a2);
+    }
+
+    @Given("^a customer wants to open an account$")
+    public void a_customer_wants_to_open_an_account() {
+        customer = new Customer();
+        mapping = new AccountMapping();
+
+    }
+
+    @When("^his account is created$")
+    public void his_account_is_created() {
+        a1 = new Account(customer);
+        mapping.addAccount(a1);
+
+    }
+
+    @Then("^there is a new account on his account list$")
+    public void there_is_a_new_account_on_his_account_list() {
+        testAccounts = mapping.getAccounts(customer);
+        assert testAccounts.contains(a1);
+    }
+
+    @Then("^the balance on this account is 0$")
+    public void the_balance_on_this_account_is_0() {
+        assert a1.getBalance() == BigDecimal.ZERO;
     }
 
 }
