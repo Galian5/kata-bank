@@ -90,12 +90,12 @@ public class Stepdefs {
 
     @Then("^balance on account A is 0.09$")
     public void balance_on_account_A_is_0_09(){
-        assert a1.getBalance().equals(BigDecimal.valueOf(0.09));
+        assert a1.getBalance().equals(new BigDecimal(0.09));
     }
 
     @Then("^balance on account B is 1099.91$")
     public void balance_on_account_B_is_1099_91(){
-        assert a2.getBalance().equals(BigDecimal.valueOf(1099.91));
+        assert a2.getBalance().equals(new BigDecimal(1099.91));
     }
 
 
