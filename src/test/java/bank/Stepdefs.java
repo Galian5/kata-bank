@@ -84,6 +84,7 @@ public class Stepdefs {
 
 
 
+
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
         amount = new BigDecimal(99.91);
@@ -104,6 +105,7 @@ public class Stepdefs {
     // deposit
     @Given("^balance on the account is 100$")
     public void balance_on_the_account_is_100(){
+
         customer = new Customer();
         a1 = new Account(customer);
         a1.setBalance(BigDecimal.valueOf(100));
