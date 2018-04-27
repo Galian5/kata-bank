@@ -12,7 +12,7 @@ public class Stepdefs {
     private Customer customer;
     private Account a1, a2;
     private Set<Account> testAccounts;
-    private BigDecimal amount; //change to local variable
+
 
     // list accs
     @Given("^a customer has 2 accounts open$")
@@ -41,19 +41,19 @@ public class Stepdefs {
     public void no_other_account_is_listed() {
         assert testAccounts.stream().allMatch(account -> account == a1 || account == a2);
     }
+
+
     // new acc
     @Given("^a customer wants to open an account$")
     public void a_customer_wants_to_open_an_account() {
         customer = new Customer();
         mapping = new AccountMapping();
-
     }
 
     @When("^his account is created$")
     public void his_account_is_created() {
         a1 = new Account(customer);
         mapping.addAccount(a1);
-
     }
 
     @Then("^there is a new account on his account list$")
@@ -67,13 +67,13 @@ public class Stepdefs {
         assert a1.getBalance().equals(BigDecimal.ZERO);
     }
 
+
     //transfer
     @Given("^balance on account A is 100$")
     public void balance_on_the_account_A_is_100(){
         customer = new Customer();
         a1 = new Account(customer);
         a1.setBalance(BigDecimal.valueOf(100));
-
     }
 
     @Given("^balance on account B is 1000$")
@@ -82,14 +82,10 @@ public class Stepdefs {
         a2.setBalance(BigDecimal.valueOf(1000));
     }
 
-
-
-
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
-        amount = new BigDecimal(99.91);
-        a1.setBalance(a1.getBalance().subtract(amount));
-        a2.setBalance(a2.getBalance().add(amount));
+        a1.setBalance(a1.getBalance().subtract(new BigDecimal(99.91)));
+        a2.setBalance(a2.getBalance().add(new BigDecimal(99.91)));
     }
 
     @Then("^balance on account A is 0.09$")
@@ -101,6 +97,7 @@ public class Stepdefs {
     public void balance_on_account_B_is_1099_91(){
         assert a2.getBalance().equals(BigDecimal.valueOf(1099.91));
     }
+
 
     // deposit
     @Given("^balance on the account is 100$")
@@ -121,6 +118,7 @@ public class Stepdefs {
     public void balance_on_the_account_is_110(){
         assert a1.getBalance().equals(BigDecimal.valueOf(110));
     }
+
 
     // withdrawn
     @Given("^balance on this account is 100$")
