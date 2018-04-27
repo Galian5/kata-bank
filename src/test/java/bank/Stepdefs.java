@@ -130,12 +130,12 @@ public class Stepdefs {
         a1.setBalance(BigDecimal.valueOf(100));
     }
 
-    @When("^customer withdraws 90 to this account")
+    @When("^customer withdraws 90 to this account$")
     public void customer_withdraws_90_to_this_account(){
         a1.setBalance(a1.getBalance().subtract(BigDecimal.valueOf(90)));
     }
 
-    @Then("^balance on the account is 10")
+    @Then("^balance on the account is 10$")
     public void balance_on_the_account_is_10(){
         assert a1.getBalance().equals(BigDecimal.valueOf(10));
     }
