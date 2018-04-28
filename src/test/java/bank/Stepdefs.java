@@ -84,8 +84,7 @@ public class Stepdefs {
 
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
-        a1.setBalance(a1.getBalance().subtract(new BigDecimal("99.91")));
-        a2.setBalance(a2.getBalance().add(new BigDecimal("99.91")));
+        a1.transferTo(a2, new BigDecimal("99.91"));
     }
 
     @Then("^balance on account A is 0.09$")
@@ -110,7 +109,7 @@ public class Stepdefs {
 
     @When("^customer deposits 10 to this account$")
     public void customer_deposits_10_to_this_account(){
-        a1.setBalance(a1.getBalance().add(BigDecimal.valueOf(10)));
+        a1.deposit(BigDecimal.valueOf(10));
         // add deposit
     }
 
@@ -130,7 +129,7 @@ public class Stepdefs {
 
     @When("^customer withdraws 90 to this account$")
     public void customer_withdraws_90_to_this_account(){
-        a1.setBalance(a1.getBalance().subtract(BigDecimal.valueOf(90)));
+        a1.withdraw(BigDecimal.valueOf(90));
     }
 
     @Then("^balance on the account is 10$")

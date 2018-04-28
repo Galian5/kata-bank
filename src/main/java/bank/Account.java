@@ -45,4 +45,20 @@ public class Account {
         this.balance = new BigDecimal(0);
 
     }
+
+    public void deposit(BigDecimal value){
+        this.setBalance(this.getBalance().add(value));
+
+    }
+
+    public void withdraw(BigDecimal value){
+        this.setBalance(this.getBalance().subtract(value));
+
+    }
+
+    public void transferTo(Account target, BigDecimal value){
+        this.withdraw(value);
+        target.deposit(value);
+
+    }
 }
