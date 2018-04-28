@@ -84,18 +84,18 @@ public class Stepdefs {
 
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
-        a1.setBalance(a1.getBalance().subtract(new BigDecimal(99.91)));
-        a2.setBalance(a2.getBalance().add(new BigDecimal(99.91)));
+        a1.setBalance(a1.getBalance().subtract(new BigDecimal("99.91")));
+        a2.setBalance(a2.getBalance().add(new BigDecimal("99.91")));
     }
 
     @Then("^balance on account A is 0.09$")
     public void balance_on_account_A_is_0_09(){
-        assert a1.getBalance().equals(new BigDecimal(0.09));
+        assert a1.getBalance().equals(new BigDecimal("0.09"));
     }
 
     @Then("^balance on account B is 1099.91$")
     public void balance_on_account_B_is_1099_91(){
-        assert a2.getBalance().equals(new BigDecimal(1099.91));
+        assert a2.getBalance().equals(new BigDecimal("1099.91"));
     }
 
 
