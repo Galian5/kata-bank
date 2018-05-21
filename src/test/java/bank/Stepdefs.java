@@ -110,7 +110,6 @@ public class Stepdefs {
     @When("^customer deposits 10 to this account$")
     public void customer_deposits_10_to_this_account(){
         a1.deposit(BigDecimal.valueOf(10));
-        // add deposit
     }
 
     @Then("^balance on the account is 110$")
@@ -137,4 +136,67 @@ public class Stepdefs {
         assert a1.getBalance().equals(BigDecimal.valueOf(10));
     }
 
+
+    // Open new deposit
+    @Given("^customer has an account with balance 100$")
+    public void customer_has_an_account_with_balance_100(){
+        customer = new Customer();
+        a1 = new Account(customer);
+        a1.setBalance(BigDecimal.valueOf(100));
+    }
+
+    @When("^he opens a deposit with balance 90$")
+    public void he_opens_a_deposit_with_balance_90(){
+        d1 = new Deposit(customer);
+        d1.setBalance(BigDecimal.valueOf(90));
+    }
+
+    @Then("^he owns a deposit with balance 90$")
+    public void he_owns_a_deposit_with_balance_90(){
+        d1.getBalance(BigDecimal.valueOf(90));
+    }
+
+    @Then("^the account has balance 10$")
+    public void the_account_has_balance_10(){
+        a1.getBalance().equals(BigDecimal.valueOf(10));
+    }
+
+    // deposit termination
+    @Given("^customer opened a deposit for a period of one year$")
+    public void customer_opened_a_deposit_for_a_period_of_one_year(){
+        a1 = new Account(customer);
+        d1 = new Deposit(customer);
+    }
+
+    @When("^one year has passed$")
+    public void one_year_has_passed(){
+        //  increase time in deposit by 1 year/ 12 months
+    }
+
+    @Then("^the money is transferred back to the account the funds were taken from$")
+    public void the_money_is_transferred_back_to_the_account_the_funds_were_taken_from(){
+        // increase acc balance by deposit balance
+
+    }
+
+    // interest rate
+    @Given("^customer has a new deposit for a period of 6 months with funds 100$")
+    public void customer_has_a_new_deposit_for_a_period_of_6_months_with_funds_100(){
+        // create deposit
+    }
+
+    @Given("^the deposit yearly interest rate is ten percent$")
+    public void the_deposit_yearly_interest_rate_is_ten_percent(){
+        // set interest rate of deposit
+    }
+
+    @When("^termination date has passed$")
+    public void termination_date_has_passed(){
+        // set term date to end
+    }
+
+    @Then("^the 105 is transferred back to his account$")
+    public void the_105_is_transferred_back_to_his_account(){
+        // transfer cash from deposit to acc
+    }
 }
