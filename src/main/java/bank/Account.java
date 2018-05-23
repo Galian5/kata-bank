@@ -56,7 +56,7 @@ public class Account {
 
     }
 
-    public void transferTo(Account target, BigDecimal value){
+    public <T extends Account> void transferTo(T target, BigDecimal value){
         this.withdraw(value);
         target.deposit(value);
 

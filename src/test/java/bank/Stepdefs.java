@@ -5,13 +5,19 @@ import cucumber.api.java.en.When;
 import cucumber.api.java.en.Then;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Set;
 
 public class Stepdefs {
     private AccountMapping mapping;
     private Customer customer;
     private Account a1, a2;
+    private Deposit d1;
     private Set<Account> testAccounts;
+    private Clock clock;
 
 
     // list accs
@@ -140,70 +146,78 @@ public class Stepdefs {
     // Open new deposit
     @Given("^customer has an account with balance 100$")
     public void customer_has_an_account_with_balance_100(){
+        mapping = new AccountMapping();
         customer = new Customer();
         a1 = new Account(customer);
+        mapping.addAccount(a1);
         a1.setBalance(BigDecimal.valueOf(100));
     }
 
     @When("^he opens a deposit with balance 90$")
     public void he_opens_a_deposit_with_balance_90(){
-        d1 = new Deposit(customer);
-        d1.setBalance(BigDecimal.valueOf(90));
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        d1 = mapping.openNewDeposit(customer, a1, BigDecimal.valueOf(90), clock);
     }
 
     @Then("^he owns a deposit with balance 90$")
     public void he_owns_a_deposit_with_balance_90(){
-        d1.getBalance(BigDecimal.valueOf(90));
+        assert d1.getBalance().equals(BigDecimal.valueOf(90));
     }
 
     @Then("^the account has balance 10$")
     public void the_account_has_balance_10(){
-        a1.getBalance().equals(BigDecimal.valueOf(10));
+        assert a1.getBalance().equals(BigDecimal.valueOf(10));
     }
 
     // deposit termination
     @Given("^customer opened a deposit for a period of one year$")
     public void customer_opened_a_deposit_for_a_period_of_one_year(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        mapping = new AccountMapping();
+        customer = new Customer();
         a1 = new Account(customer);
         a1.setBalance(BigDecimal.valueOf(100));
-        d1 = new Deposit(customer);
-        a1.transferTo(d1, new BigDecimal("100"));
+        d1 = mapping.openNewDeposit(customer, a1, BigDecimal.valueOf(100), clock);
     }
 
     @When("^one year has passed$")
     public void one_year_has_passed(){
-        d1.setTermDate(1);
+        clock = Clock.fixed(Instant.parse("2019-01-01T00:00:01Z"), ZoneId.of("UTC"));
+        mapping.terminateDeposit(d1, clock);
     }
 
     @Then("^the money is transferred back to the account the funds were taken from$")
     public void the_money_is_transferred_back_to_the_account_the_funds_were_taken_from(){
-        d1.transferTo(a1, new BigDecimal(100));
+        assert a1.getBalance().equals(new BigDecimal(100));
 
     }
 
     // interest rate
     @Given("^customer has a new deposit for a period of 6 months with funds 100$")
     public void customer_has_a_new_deposit_for_a_period_of_6_months_with_funds_100(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        mapping = new AccountMapping();
+        customer = new Customer();
         a1 = new Account(customer);
         a1.setBalance(BigDecimal.valueOf(100));
-        d1 = new Deposit(customer);
-        a1.transferTo(d1, new BigDecimal("100"));
+        d1 = mapping.openNewDeposit(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(6), clock);
     }
 
     @Given("^the deposit yearly interest rate is ten percent$")
     public void the_deposit_yearly_interest_rate_is_ten_percent(){
-        d1.setInterestRate(0.1);
+        d1.setInterestRate(new BigDecimal("0.1"));
     }
 
     @When("^termination date has passed$")
     public void termination_date_has_passed(){
-        d1.setTermDate(1);
+        clock = Clock.fixed(Instant.parse("2018-07-02T00:00:00Z"), ZoneId.of("UTC"));
+        mapping.terminateDeposit(d1, clock);
+
     }
-    //it have to mutliply amount of cash on the acc by interest rate and
-    // how much of termination time has passed. next add this amount during transfer
 
     @Then("^the 105 is transferred back to his account$")
     public void the_105_is_transferred_back_to_his_account(){
-        d1.transferTo(a1, new BigDecimal("105"));
+        System.out.println(a1.getBalance());
+        assert a1.getBalance().equals(new BigDecimal("105.00"));
     }
 }
