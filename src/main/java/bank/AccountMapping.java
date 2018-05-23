@@ -1,6 +1,7 @@
 package bank;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Period;
 import java.util.*;
 
@@ -21,20 +22,26 @@ public class AccountMapping {
         accounts.add(account);
         mapping.put(account.getOwner(), accounts);
     }
+
     public void addDeposit(Deposit deposit) {
         Set<Deposit> deposits = getDeposits(deposit.getOwner());
         deposits.add(deposit);
         depositMapping.put(deposit.getOwner(), deposits);
     }
 
-    public Deposit openNewDeposit(Customer customer, Account account, BigDecimal amount){
-        return openNewDeposit(customer, account, amount, Period.ofYears(1));
+    public Deposit openNewDeposit(Customer customer, Account account, BigDecimal amount, Clock clock){
+        return openNewDeposit(customer, account, amount, Period.ofYears(1), clock);
     }
 
-    public Deposit openNewDeposit(Customer customer, Account account, BigDecimal amount, Period period){
-        Deposit deposit = new Deposit(customer, period);
+    public Deposit openNewDeposit(Customer customer, Account account, BigDecimal amount, Period period, Clock clock){
+        Deposit deposit = new Deposit(customer, period, clock);
         addDeposit(deposit);
         account.transferTo(deposit, amount);
+        deposit.setSourceAccount(account);
         return deposit;
+    }
+
+    public void terminateDeposit(Deposit deposit, Clock clock){
+        deposit.terminate(clock);
     }
 }
