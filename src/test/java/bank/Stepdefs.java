@@ -252,7 +252,7 @@ public class Stepdefs {
 
     @Then("^the interest for this funds is proportional to the deposit time left$")
     public void the_interest_for_this_funds_is_proportional_to_the_deposit_time_left(){
-\        clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
+        clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
         mapping.terminateDeposit(d1, clock);
         assert a1.getBalance().equals(new BigDecimal("110.00").add(new BigDecimal("107.5")));
     }
