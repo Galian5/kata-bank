@@ -90,7 +90,8 @@ public class Stepdefs {
 
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
-        a1.transferTo(a2, new BigDecimal("99.91"));
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        a1.transferTo(a2, new BigDecimal("99.91"), clock);
     }
 
     @Then("^balance on account A is 0.09$")
@@ -115,7 +116,8 @@ public class Stepdefs {
 
     @When("^customer deposits 10 to this account$")
     public void customer_deposits_10_to_this_account(){
-        a1.deposit(BigDecimal.valueOf(10));
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        a1.deposit(BigDecimal.valueOf(10), clock);
     }
 
     @Then("^balance on the account is 110$")
@@ -161,7 +163,8 @@ public class Stepdefs {
 
     @Then("^he owns a deposit with balance 90$")
     public void he_owns_a_deposit_with_balance_90(){
-        assert d1.getBalance().equals(BigDecimal.valueOf(90));
+        System.out.println(d1.getBalance());
+        assert d1.getBalance().equals(new BigDecimal("90.0"));
     }
 
     @Then("^the account has balance 10$")

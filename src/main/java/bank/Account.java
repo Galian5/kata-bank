@@ -1,6 +1,7 @@
 package bank;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public class Account {
 
     }
 
-    public void deposit(BigDecimal value){
+    public void deposit(BigDecimal value, Clock clock){
         this.setBalance(this.getBalance().add(value));
 
     }
@@ -56,9 +57,9 @@ public class Account {
 
     }
 
-    public <T extends Account> void transferTo(T target, BigDecimal value){
+    public <T extends Account> void transferTo(T target, BigDecimal value, Clock clock){
         this.withdraw(value);
-        target.deposit(value);
+        target.deposit(value, clock);
 
     }
 }
