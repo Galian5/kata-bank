@@ -256,4 +256,28 @@ public class Stepdefs {
         mapping.terminateDeposit(d1, clock);
         assert a1.getBalance().equals(new BigDecimal("110.00").add(new BigDecimal("107.5")));
     }
+
+
+
+    // deposit insurance cost
+    @Given("^there is a customer who is about to open a new deposit of any kind$")
+    public void there_is_a_customer_who_is_about_to_open_a_new_deposit_of_any_kind(){
+        mapping = new AccountMapping();
+        customer = new Customer();
+        a1 = new Account(customer);
+        mapping.addAccount(a1);
+        a1.setBalance(BigDecimal.valueOf(100));
+    }
+
+    @When("^he decided to add the insurance to the deposit$")
+    public void he_decided_to_add_the_insurance_to_the_deposit(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        d1 = mapping.openNewDepositWithInsurance(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(12), clock);
+    }
+
+    @Then("^the deposited amount is 0.05% lower than the original amount$")
+    public void the_deposited_amount_is_005_lower_than_the_original_amount(){
+        assert d1.getBalance().equals(BigDecimal.valueOf(95));
+    }
+
 }

@@ -41,6 +41,15 @@ public class AccountMapping {
         return deposit;
     }
 
+    public Deposit openNewDepositWithInsurance(Customer customer, Account account, BigDecimal amount, Period period, Clock clock){
+        // TODO: 11.06.18 implement
+        Deposit deposit = new Deposit(customer, period, clock);
+        addDeposit(deposit);
+        account.transferTo(deposit, amount);
+        deposit.setSourceAccount(account);
+        return deposit;
+    }
+
     public void terminateDeposit(Deposit deposit, Clock clock){
         deposit.terminate(clock);
     }
