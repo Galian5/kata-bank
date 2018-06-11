@@ -44,4 +44,8 @@ public class AccountMapping {
     public void terminateDeposit(Deposit deposit, Clock clock){
         deposit.terminate(clock);
     }
+
+    public void addFundsToDeposit(Deposit deposit, BigDecimal amount, Clock clock){
+        // TODO: 11.06.18 implement
+    }
 }

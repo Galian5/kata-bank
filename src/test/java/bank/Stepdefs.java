@@ -220,4 +220,40 @@ public class Stepdefs {
         System.out.println(a1.getBalance());
         assert a1.getBalance().equals(new BigDecimal("105.00"));
     }
+
+    // new deposit funds
+    @Given("^there is a customer with a deposit opened$")
+    public void there_is_a_customer_with_a_deposit_opened(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        mapping = new AccountMapping();
+        customer = new Customer();
+        a1 = new Account(customer);
+        a1.setBalance(BigDecimal.valueOf(200));
+        d1 = mapping.openNewDeposit(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(12), clock);
+        d1.setInterestRate(new BigDecimal("0.1"));
+    }
+
+
+    @When("^he transfers new funds to the existing deposit$")
+    public void he_transfers_new_funds_to_the_existing_deposit(){
+        clock = Clock.fixed(Instant.parse("2018-07-01T00:00:00Z"), ZoneId.of("UTC"));
+
+        mapping.addFundsToDeposit(d1, BigDecimal.valueOf(100), clock);
+
+    }
+
+    @Then("^the interest rate for these funds is 0.5% greater than the original interest rate$")
+    public void the_interest_rate_for_these_funds_is_05_greater_than_the_original_interest_rate(){
+        // TODO: 11.06.18 implement
+        BigDecimal rate = d1.getInterestRate();
+        assert rate.equals(new BigDecimal("0.15"));
+
+    }
+
+    @Then("^the interest for this funds is proportional to the deposit time left$")
+    public void the_interest_for_this_funds_is_proportional_to_the_deposit_time_left(){
+\        clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
+        mapping.terminateDeposit(d1, clock);
+        assert a1.getBalance().equals(new BigDecimal("110.00").add(new BigDecimal("107.5")));
+    }
 }

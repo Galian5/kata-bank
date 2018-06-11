@@ -22,6 +22,10 @@ public class Deposit extends Account {
         this.interestRate = interest_rate;
     }
 
+    public BigDecimal getInterestRate() {
+        return interestRate;
+    }
+
     public void setSourceAccount(Account sourceAccount) {
         this.sourceAccount = sourceAccount;
     }
