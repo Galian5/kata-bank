@@ -56,5 +56,6 @@ public class AccountMapping {
 
     public void addFundsToDeposit(Deposit deposit, BigDecimal amount, Clock clock){
         // TODO: 11.06.18 implement
+        deposit.getSourceAccount().transferTo(deposit, amount, clock);
     }
 }

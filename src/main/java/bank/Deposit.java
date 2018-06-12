@@ -16,6 +16,9 @@ public class Deposit extends Account {
 
     private List<DepositFunds> balances;
 
+    public List<DepositFunds> getBalances() {
+        return balances;
+    }
 
     public Deposit(Customer owner, Period period, Clock clock) {
         super(owner);
@@ -29,8 +32,10 @@ public class Deposit extends Account {
         this.interestRate = interest_rate;
     }
 
-    public BigDecimal getInterestRate() {
-
+    public BigDecimal getInterestRate(DepositFunds depositFunds) {
+        if(!depositFunds.getStartDateTime().toLocalDate().equals(startDateTime.toLocalDate())){
+            return interestRate.add(new BigDecimal("0.05"));
+        }
         return interestRate;
     }
 
@@ -40,16 +45,12 @@ public class Deposit extends Account {
 
     public void terminate(Clock clock) throws RuntimeException {
         if(LocalDateTime.now(clock).isAfter(startDateTime.plus(period))){
-            for (int i = 0; i < balances.size(); i++) {
+            for (DepositFunds depositFunds : balances) {
 
-                DepositFunds depositFunds = balances.get(i);
                 System.out.println(depositFunds.getBalance());
-                System.out.println(depositFunds.getInterestRate());
                 System.out.println(depositFunds.getStartDateTime());
-                BigDecimal interest = interestRate;
-                if(!depositFunds.getStartDateTime().toLocalDate().equals(startDateTime.toLocalDate())){
-                    interest = interestRate.add(new BigDecimal("0.05"));
-                }
+                BigDecimal interest = getInterestRate(depositFunds);
+
                 Period p = Period.between(depositFunds.getStartDateTime().toLocalDate(), startDateTime.plus(period).toLocalDate());
                 BigDecimal multiplier = new BigDecimal(p.toTotalMonths()).divide(BigDecimal.valueOf(12));
                 BigDecimal finalBalance = depositFunds.getBalance().multiply(interest.multiply(multiplier).add(BigDecimal.ONE));
@@ -64,15 +65,15 @@ public class Deposit extends Account {
 
     @Override
     public void deposit(BigDecimal value, Clock clock) {
-        BigDecimal interest = interestRate;
-        if(!LocalDate.now(clock).equals(startDateTime.toLocalDate())){
-            interest = interestRate.add(new BigDecimal("0.05"));
-        }
-        balances.add(new DepositFunds(value, interest, LocalDateTime.now(clock)));
+        balances.add(new DepositFunds(value, LocalDateTime.now(clock)));
     }
 
     @Override
     public BigDecimal getBalance() {
         return this.balances.stream().map(DepositFunds::getBalance).reduce(new BigDecimal("0.0"), (a, b) -> a.add(b));
+    }
+
+    public Account getSourceAccount() {
+        return sourceAccount;
     }
 }

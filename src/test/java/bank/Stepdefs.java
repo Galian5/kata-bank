@@ -9,6 +9,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Set;
 
 public class Stepdefs {
@@ -247,8 +248,9 @@ public class Stepdefs {
 
     @Then("^the interest rate for these funds is 0.5% greater than the original interest rate$")
     public void the_interest_rate_for_these_funds_is_05_greater_than_the_original_interest_rate(){
-        // TODO: 11.06.18 implement
-        BigDecimal rate = d1.getInterestRate();
+        List<DepositFunds>funds = d1.getBalances();
+
+        BigDecimal rate = d1.getInterestRate(funds.get(funds.size() - 1));
         assert rate.equals(new BigDecimal("0.15"));
 
     }
@@ -257,7 +259,8 @@ public class Stepdefs {
     public void the_interest_for_this_funds_is_proportional_to_the_deposit_time_left(){
         clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
         mapping.terminateDeposit(d1, clock);
-        assert a1.getBalance().equals(new BigDecimal("110.00").add(new BigDecimal("107.5")));
+        System.out.println(a1.getBalance());
+        assert a1.getBalance().equals(new BigDecimal("110.000").add(new BigDecimal("107.500")));
     }
 
 
