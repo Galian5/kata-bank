@@ -9,6 +9,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Set;
 
 public class Stepdefs {
@@ -90,7 +91,8 @@ public class Stepdefs {
 
     @When("^transferred 99.91 from account A to B$")
     public void transferred_99_91_from_account_A_to_B(){
-        a1.transferTo(a2, new BigDecimal("99.91"));
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        a1.transferTo(a2, new BigDecimal("99.91"), clock);
     }
 
     @Then("^balance on account A is 0.09$")
@@ -115,7 +117,8 @@ public class Stepdefs {
 
     @When("^customer deposits 10 to this account$")
     public void customer_deposits_10_to_this_account(){
-        a1.deposit(BigDecimal.valueOf(10));
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        a1.deposit(BigDecimal.valueOf(10), clock);
     }
 
     @Then("^balance on the account is 110$")
@@ -161,7 +164,8 @@ public class Stepdefs {
 
     @Then("^he owns a deposit with balance 90$")
     public void he_owns_a_deposit_with_balance_90(){
-        assert d1.getBalance().equals(BigDecimal.valueOf(90));
+        System.out.println(d1.getBalance());
+        assert d1.getBalance().equals(new BigDecimal("90.0"));
     }
 
     @Then("^the account has balance 10$")
@@ -220,4 +224,67 @@ public class Stepdefs {
         System.out.println(a1.getBalance());
         assert a1.getBalance().equals(new BigDecimal("105.00"));
     }
+
+    // new deposit funds
+    @Given("^there is a customer with a deposit opened$")
+    public void there_is_a_customer_with_a_deposit_opened(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        mapping = new AccountMapping();
+        customer = new Customer();
+        a1 = new Account(customer);
+        a1.setBalance(BigDecimal.valueOf(200));
+        d1 = mapping.openNewDeposit(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(12), clock);
+        d1.setInterestRate(new BigDecimal("0.1"));
+    }
+
+
+    @When("^he transfers new funds to the existing deposit$")
+    public void he_transfers_new_funds_to_the_existing_deposit(){
+        clock = Clock.fixed(Instant.parse("2018-07-01T00:00:00Z"), ZoneId.of("UTC"));
+
+        mapping.addFundsToDeposit(d1, BigDecimal.valueOf(100), clock);
+
+    }
+
+    @Then("^the interest rate for these funds is 0.5% greater than the original interest rate$")
+    public void the_interest_rate_for_these_funds_is_05_greater_than_the_original_interest_rate(){
+        List<DepositFunds>funds = d1.getBalances();
+
+        BigDecimal rate = d1.getInterestRate(funds.get(funds.size() - 1));
+        assert rate.equals(new BigDecimal("0.15"));
+
+    }
+
+    @Then("^the interest for this funds is proportional to the deposit time left$")
+    public void the_interest_for_this_funds_is_proportional_to_the_deposit_time_left(){
+        clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
+        mapping.terminateDeposit(d1, clock);
+        System.out.println(a1.getBalance());
+        assert a1.getBalance().equals(new BigDecimal("110.000").add(new BigDecimal("107.500")));
+    }
+
+
+
+    // deposit insurance cost
+    @Given("^there is a customer who is about to open a new deposit of any kind$")
+    public void there_is_a_customer_who_is_about_to_open_a_new_deposit_of_any_kind(){
+        mapping = new AccountMapping();
+        customer = new Customer();
+        a1 = new Account(customer);
+        mapping.addAccount(a1);
+        a1.setBalance(BigDecimal.valueOf(100));
+    }
+
+    @When("^he decided to add the insurance to the deposit$")
+    public void he_decided_to_add_the_insurance_to_the_deposit(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        d1 = mapping.openNewDepositWithInsurance(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(12), clock);
+    }
+
+    @Then("^the deposited amount is 0.05% lower than the original amount$")
+    public void the_deposited_amount_is_005_lower_than_the_original_amount(){
+        System.out.println(d1.getBalance());
+        assert d1.getBalance().equals(new BigDecimal("99.9500"));
+    }
+
 }
