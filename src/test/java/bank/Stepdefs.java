@@ -283,7 +283,8 @@ public class Stepdefs {
 
     @Then("^the deposited amount is 0.05% lower than the original amount$")
     public void the_deposited_amount_is_005_lower_than_the_original_amount(){
-        assert d1.getBalance().equals(BigDecimal.valueOf(95));
+        System.out.println(d1.getBalance());
+        assert d1.getBalance().equals(new BigDecimal("99.9500"));
     }
 
 }
