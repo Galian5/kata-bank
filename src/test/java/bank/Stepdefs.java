@@ -287,4 +287,33 @@ public class Stepdefs {
         assert d1.getBalance().equals(new BigDecimal("99.9500"));
     }
 
+
+    // deposit insurance early withdrawal
+    @Given("^there is a customer who is about to open a new deposit$")
+    public void there_is_a_customer_who_is_about_to_open_a_new_deposit(){
+        mapping = new AccountMapping();
+        customer = new Customer();
+        a1 = new Account(customer);
+        mapping.addAccount(a1);
+        a1.setBalance(BigDecimal.valueOf(100));
+    }
+
+    @Given("^he decided to add the insurance$")
+    public void he_decided_to_add_the_insurance(){
+        clock = Clock.fixed(Instant.parse("2018-01-01T00:00:00Z"), ZoneId.of("UTC"));
+        d1 = mapping.openNewDepositWithInsurance(customer, a1, BigDecimal.valueOf(100), Period.ofMonths(12), clock);
+    }
+
+    @When("^he decides to do an early withdrawal$")
+    public void he_decides_to_do_an_early_withdrawal(){
+        clock = Clock.fixed(Instant.parse("2019-01-02T00:00:00Z"), ZoneId.of("UTC"));
+        mapping.terminateDeposit(d1, clock);
+    }
+
+    @Then("^he does not lose any accumulated interest$")
+    public void he_does_not_lose_any_accumulated_interest(){
+
+        System.out.println(a1.getBalance());
+        assert a1.getBalance().equals(new BigDecimal("95.000"));    }
+
 }
