@@ -314,6 +314,6 @@ public class Stepdefs {
     public void he_does_not_lose_any_accumulated_interest(){
 
         System.out.println(a1.getBalance());
-        assert a1.getBalance().equals(new BigDecimal("99.950"));    }
+        assert a1.getBalance().equals(new BigDecimal("99.9500"));    }
 
 }
